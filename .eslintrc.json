@@ -29,7 +29,6 @@
 		"@typescript-eslint/no-explicit-any": "off",
 		// Other recommended rules
 		"no-empty-function": "error",
-		"no-console": "warn",
 		"no-else-return": "error",
 		"eqeqeq": ["error", "always"],
 
