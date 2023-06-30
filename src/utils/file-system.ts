@@ -34,3 +34,26 @@ export function deleteFileOrDirectory(filePath: string): void {
 		}
 	}
 }
+
+// Check if a directory exists
+export function directoryExists(directoryPath: string): boolean {
+	return (
+		fs.existsSync(directoryPath) && fs.lstatSync(directoryPath).isDirectory()
+	);
+}
+
+// Check if a file exists
+export function fileExists(filePath: string): boolean {
+	return fs.existsSync(filePath) && fs.lstatSync(filePath).isFile();
+}
+
+export function readJSON(filePath: string): any {
+	const data = readFile(filePath);
+	return JSON.parse(data);
+}
+
+// Write JSON to a file
+export function writeJSON(filePath: string, json: object): void {
+	const data = JSON.stringify(json, null, 2);
+	writeFile(filePath, data);
+}

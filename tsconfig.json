@@ -3,7 +3,6 @@
 		"target": "es6",
 		"module": "commonjs",
 		"rootDir": "src",
-		"sourceMap": true,
 		"outDir": "dist",
 		"removeComments": true,
 		"noEmitOnError": true,
@@ -12,8 +11,16 @@
 		"strict": true,
 		"noUnusedLocals": true,
 		"noFallthroughCasesInSwitch": true,
-		"allowUnreachableCode": true,
-		"skipLibCheck": true
+		"allowUnreachableCode": false,
+		"skipLibCheck": true,
+		"lib": ["esnext"],
+		"declaration": true,
+		"importHelpers": true,
+		"allowJs": true,
+		"allowSyntheticDefaultImports": true,
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"isolatedModules": true
 	},
 	"include": ["src/**/*"],
 	"exclude": ["node_modules", "./server/tests"]

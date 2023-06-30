@@ -1,30 +1,16 @@
 export class MissingArgumentError extends Error {
-	public args: string[];
+	public arg: string;
 	/**
 	 *
-	 * @param args Array of arguments missing
+	 * @param arg argument missing
 	 */
-	constructor(args: string[]) {
-		const missingArgs = args.join(', ');
-		const errorMessage = `The command you entered is missing the following arguments: ${missingArgs}`;
+	constructor(arg: string) {
+		const errorMessage = `The command you entered is missing the following argument: ${arg}`;
 		super(errorMessage);
-		this.args = args;
+		this.arg = arg;
 		this.name = 'MissingArgumentError';
 	}
 }
 
-export class InvalidFlagError extends Error {
-	public flags: string[];
-  /**
-   * 
-   * @param flags Array of flags which are invalid 
-   */
-	constructor(flags: string[]) {
-		const invalidFlags = flags.join(', ');
-		const errorMessage = `The command you entered have some invalid flags :${invalidFlags}`;
-		super(errorMessage);
-		this.flags = flags;
-	}
-}
 
 
