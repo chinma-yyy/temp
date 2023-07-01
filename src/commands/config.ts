@@ -16,7 +16,7 @@ export default class Config extends Command {
   }
 
   static args = {
-    file: Args.string({description: 'file to read'}),
+    file: Args.string({description: 'The attribute to configure'}),
   }
 
   public async run(): Promise<void> {

@@ -1,12 +1,7 @@
 import { Args, Command, Flags } from '@oclif/core';
 import inquirer, { QuestionCollection } from 'inquirer';
-import {
-	createDirectory,
-	createFile,
-	directoryExists,
-	writeJSON,
-} from '../utils/file-system';
-import { currentDirecorty, tempDirectory, tempFilePath } from '../statics';
+import { createFile, directoryExists, writeJSON } from '../utils/file-system';
+import { currentDirecorty, tempJSONFilePath } from '../statics';
 
 export default class Init extends Command {
 	static description =
@@ -30,7 +25,7 @@ export default class Init extends Command {
 		try {
 			const { flags } = await this.parse(Init);
 			if (directoryExists(currentDirecorty + '/.temp')) {
-				throw new Error('Already initiated');
+				throw new Error('Project Already initiated');
 			}
 			let answers;
 			if (!flags.yes) {
@@ -85,13 +80,14 @@ export default class Init extends Command {
 				repository: repo,
 				version,
 			};
-			createDirectory(tempDirectory);
-			createFile(tempFilePath);
-			writeJSON(tempFilePath, init);
+			createFile(tempJSONFilePath);
+			writeJSON(tempJSONFilePath, init);
 			console.clear();
-			console.log(`\n\nYour temp project has been created. Let's create that project template now!!!`)
-		} catch (error) {
-			console.error('Please report this error and how you reached to it');
+			console.log(
+				`\n\nYour temp project has been created. Let's create that project template now!!!`,
+			);
+		} catch (error: any) {
+			console.error(error.message);
 		}
 	}
 }

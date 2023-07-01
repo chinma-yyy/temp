@@ -3,3 +3,5 @@ dist
 .env
 .temp
 .tempignore
+temp.json
+*.zip
