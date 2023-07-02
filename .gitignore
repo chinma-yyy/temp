@@ -5,3 +5,4 @@ dist
 .tempignore
 temp.json
 *.zip
+templates

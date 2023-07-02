@@ -3,6 +3,7 @@ import * as fs from 'fs-extra';
 import * as minimatch from 'minimatch';
 import { currentDirecorty } from '../statics';
 import { ux } from '@oclif/core';
+import unzipper from 'unzipper';
 
 function shouldIgnore(path: string): boolean {
 	const tempIgnoreFile = '.tempignore';
@@ -55,4 +56,17 @@ export async function createZipArchive(outputPath: string): Promise<void> {
 	setTimeout(() => {
 		ux.action.stop("\nIt's done you can view it in the .temp directory");
 	}, 1000);
+}
+
+export async function unzipArchive(
+	zipPath: string,
+	targetDir: string = currentDirecorty,
+): Promise<void> {
+	ux.action.start('Unzipping the archive');
+	await fs.ensureDir(targetDir);
+	await fs
+		.createReadStream(zipPath)
+		.pipe(unzipper.Extract({ path: targetDir }))
+		.promise();
+	ux.action.stop('\nUnzipping completed successfully');
 }

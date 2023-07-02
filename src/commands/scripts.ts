@@ -31,43 +31,56 @@ export default class Scripts extends Command {
 	static args = {};
 
 	public async run(): Promise<void> {
-		const { flags } = await this.parse(Scripts);
-		const JSON = readJSON(tempJSONFilePath);
-		const beforeScripts: Array<string> = JSON?.before || [];
-		const afterScripts: Array<string> = JSON?.after || [];
+		try {
+			const { flags } = await this.parse(Scripts);
+			const JSON = readJSON(tempJSONFilePath);
+			const beforeScripts: Array<string> = JSON?.before || [];
+			const afterScripts: Array<string> = JSON?.after || [];
 
-		if (flags.view) {
-			console.log('Before scripts');
-			beforeScripts.forEach((script, ind) => {
-				console.log(`${ind + 1}. ${script}`);
-			});
-			console.log('After scripts');
-			afterScripts.forEach((script, ind) => {
-				console.log(`${ind + 1}. ${script}`);
-			});
-			return;
-		}
-		if ((flags.before && flags.after) || (!flags.after && !flags.before)) {
-			inquirer
-				.prompt([
-					{
-						type: 'list',
-						name: 'type',
-						message: 'Which scripts you want to add?',
-						choices: ['before', 'after'],
-					},
-				])
-				.then(async (answers) => {
-					if (answers.type === 'after') {
-						await addScripts(afterScripts, JSON);
-					} else {
-						await addScripts(beforeScripts, JSON);
-					}
-				});
-		} else if (flags.before) {
-			await addScripts(beforeScripts, JSON);
-		} else if (flags.after) {
-			await addScripts(afterScripts, JSON);
+			if (flags.view) {
+				console.log(Chalk.yellow('Before scripts'));
+				if (beforeScripts.length === 0) {
+					console.log(Chalk.magenta('No before scripts configured'));
+				} else {
+					beforeScripts.forEach((script, ind) => {
+						console.log(`${ind + 1}. ${Chalk.underline(script)}`);
+					});
+				}
+				console.log(Chalk.yellow('After scripts'));
+				if (afterScripts.length === 0) {
+					console.log(Chalk.magenta('No after scripts configured'));
+				} else {
+					afterScripts.forEach((script, ind) => {
+						console.log(`${ind + 1}. ${Chalk.underline(script)}`);
+					});
+				}
+				return;
+			}
+			if ((flags.before && flags.after) || (!flags.after && !flags.before)) {
+				inquirer
+					.prompt([
+						{
+							type: 'list',
+							name: 'type',
+							message: 'Which scripts you want to add?',
+							choices: ['before', 'after'],
+						},
+					])
+					.then(async (answers) => {
+						if (answers.type === 'after') {
+							await addScripts(afterScripts, JSON);
+						} else {
+							await addScripts(beforeScripts, JSON);
+						}
+					});
+			} else if (flags.before) {
+				await addScripts(beforeScripts, JSON);
+			} else if (flags.after) {
+				await addScripts(afterScripts, JSON);
+			}
+		} catch (error: any) {
+			console.log('scripts');
+			console.log(error.message);
 		}
 	}
 }

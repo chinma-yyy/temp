@@ -1,7 +1,7 @@
 import { Args, Command, Flags } from '@oclif/core';
 import inquirer, { QuestionCollection } from 'inquirer';
-import { createFile, directoryExists, writeJSON } from '../utils/file-system';
-import { currentDirecorty, tempJSONFilePath } from '../statics';
+import { createFile, writeJSON } from '../utils/file-system';
+import { tempJSONFilePath } from '../statics';
 
 export default class Init extends Command {
 	static description =
@@ -24,9 +24,6 @@ export default class Init extends Command {
 	public async run(): Promise<void> {
 		try {
 			const { flags } = await this.parse(Init);
-			if (directoryExists(currentDirecorty + '/.temp')) {
-				throw new Error('Project Already initiated');
-			}
 			let answers;
 			if (!flags.yes) {
 				const questions: QuestionCollection = [
@@ -34,6 +31,11 @@ export default class Init extends Command {
 						type: 'input',
 						name: 'name',
 						message: 'Template name:',
+					},
+					{
+						type: 'input',
+						name: 'description',
+						message: 'Description of the template:',
 					},
 					{
 						type: 'input',
@@ -50,15 +52,12 @@ export default class Init extends Command {
 						name: 'version',
 						message: 'Version of this template:',
 					},
-					{
-						type: 'input',
-						name: 'description',
-						message: 'Description of the template:',
-					},
+
 					{
 						type: 'list',
 						name: 'type',
 						message: 'What is the type of the registry used for the template?',
+						choices: ['local', 'remote'],
 					},
 					{
 						type: 'confirm',
@@ -87,13 +86,14 @@ export default class Init extends Command {
 				version,
 				type,
 			};
-			createFile(tempJSONFilePath);
+			createFile(tempJSONFilePath, '{}');
 			writeJSON(tempJSONFilePath, init);
 			console.clear();
 			console.log(
 				`\n\nYour temp project has been created. Let's create that project template now!!!`,
 			);
 		} catch (error: any) {
+			console.log('inti');
 			console.error(error.message);
 		}
 	}

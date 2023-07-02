@@ -48,8 +48,12 @@ export function fileExists(filePath: string): boolean {
 }
 
 export function readJSON(filePath: string): any {
-	const data = readFile(filePath);
-	return JSON.parse(data);
+	try {
+		const data = readFile(filePath);
+		return JSON.parse(data);
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 // Write JSON to a file
