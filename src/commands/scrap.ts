@@ -1,7 +1,11 @@
 import { Args, Command, Flags } from '@oclif/core';
 import { createZipArchive } from '../utils/zip';
-import { currentDirecorty, tempJSONFilePath } from '../statics';
-import { readJSON } from '../utils/file-system';
+import {
+	zipFilePathProject,
+	zipFilePathRelative,
+	zipFilePathRelativeDirectory,
+} from '../statics';
+import { createDirectory, directoryExists } from '../utils/file-system';
 
 export default class Scrap extends Command {
 	static description =
@@ -10,10 +14,11 @@ export default class Scrap extends Command {
 	static examples = ['temp scrap'];
 
 	static flags = {
-		// flag with a value (-n, --name=VALUE)
-		name: Flags.string({ char: 'n', description: 'name to print' }),
-		// flag with no value (-f, --force)
-		force: Flags.boolean({ char: 'f' }),
+		local: Flags.boolean({
+			char: 'l',
+			description:
+				'To create a local template which will be stored in device hidden',
+		}),
 	};
 
 	static args = {
@@ -21,8 +26,13 @@ export default class Scrap extends Command {
 	};
 
 	public async run(): Promise<void> {
-		const tempConfig = readJSON(tempJSONFilePath);
-		const templateName = tempConfig.templateName;
-		await createZipArchive(currentDirecorty + '/' + templateName + '.zip');
+		const { flags } = await this.parse(Scrap);
+		const zipfilepath = flags.local ? zipFilePathRelative : zipFilePathProject;
+		if (flags.local) {
+			if (!directoryExists(zipFilePathRelativeDirectory)) {
+				createDirectory(zipFilePathRelativeDirectory);
+			}
+		}
+		await createZipArchive(zipfilepath);
 	}
 }

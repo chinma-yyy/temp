@@ -21,6 +21,7 @@
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-plugins": "^2.4.7",
     "archiver": "^5.3.1",
+    "chalk": "^4.1.2",
     "fs-extra": "^11.1.1",
     "inquirer": "^8.2.0",
     "minimatch": "^9.0.2"

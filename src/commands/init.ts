@@ -56,6 +56,11 @@ export default class Init extends Command {
 						message: 'Description of the template:',
 					},
 					{
+						type: 'list',
+						name: 'type',
+						message: 'What is the type of the registry used for the template?',
+					},
+					{
 						type: 'confirm',
 						message: 'Are the details correct?',
 						name: 'confirm',
@@ -73,12 +78,14 @@ export default class Init extends Command {
 			const author = answers?.author || '';
 			const description = answers?.description || '';
 			const version = answers?.version || '1.0.0';
+			const type = answers?.type || 'local';
 			const init = {
 				templateName,
 				description,
 				author,
 				repository: repo,
 				version,
+				type,
 			};
 			createFile(tempJSONFilePath);
 			writeJSON(tempJSONFilePath, init);
