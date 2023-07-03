@@ -60,7 +60,7 @@ export async function createZipArchive(outputPath: string): Promise<void> {
 
 export async function unzipArchive(
 	zipPath: string,
-	targetDir: string = currentDirecorty,
+	targetDir: string = currentDirecorty + '/direct',
 ): Promise<void> {
 	ux.action.start('Unzipping the archive');
 	await fs.ensureDir(targetDir);
@@ -68,5 +68,5 @@ export async function unzipArchive(
 		.createReadStream(zipPath)
 		.pipe(unzipper.Extract({ path: targetDir }))
 		.promise();
-	ux.action.stop('\nUnzipping completed successfully');
+	ux.action.stop();
 }

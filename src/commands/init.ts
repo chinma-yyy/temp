@@ -2,6 +2,7 @@ import { Args, Command, Flags } from '@oclif/core';
 import inquirer, { QuestionCollection } from 'inquirer';
 import { createFile, writeJSON } from '../utils/file-system';
 import { tempJSONFilePath } from '../statics';
+import chalk from 'chalk';
 
 export default class Init extends Command {
 	static description =
@@ -72,7 +73,7 @@ export default class Init extends Command {
 					});
 				} while (!answers.confirm);
 			}
-			const templateName = answers?.name || process.cwd();
+			const templateName = answers?.name || 'sagxv';
 			const repo = answers?.repo || '';
 			const author = answers?.author || '';
 			const description = answers?.description || '';
@@ -86,14 +87,14 @@ export default class Init extends Command {
 				version,
 				type,
 			};
-			createFile(tempJSONFilePath, '{}');
+			createFile(tempJSONFilePath);
 			writeJSON(tempJSONFilePath, init);
-			console.clear();
 			console.log(
-				`\n\nYour temp project has been created. Let's create that project template now!!!`,
+				chalk.yellow(
+					`\n\nYour temp project has been created. Let's create that project template now!!!`,
+				),
 			);
 		} catch (error: any) {
-			console.log('inti');
 			console.error(error.message);
 		}
 	}

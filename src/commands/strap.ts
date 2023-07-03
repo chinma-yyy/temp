@@ -1,10 +1,11 @@
 import { Args, Command, Flags } from '@oclif/core';
 import { readJSON } from '../utils/file-system';
-import { zipFilePathRelativeDirectory } from '../statics';
 import { MissingArgumentError } from '../errors/error';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { unzipArchive } from '../utils/zip';
+import { templatesDirectoryJSON } from '../dynamics';
+import { currentDirecorty } from '../statics';
 
 export default class Strap extends Command {
 	static description =
@@ -50,7 +51,10 @@ export default class Strap extends Command {
 				})
 				.then(
 					async () => {
-						await unzipArchive(templates[0].location);
+						await unzipArchive(
+							templates[0].location,
+							currentDirecorty + '/' + templates[0].name,
+						);
 					},
 					() => {
 						console.log(chalk.blue('Maybe later ?...'));
@@ -64,9 +68,7 @@ export default class Strap extends Command {
 }
 
 function searchLocalTemplates(name: string): Array<any> {
-	const templateInfo: Array<any> = readJSON(
-		zipFilePathRelativeDirectory + '/temp.json',
-	).templates;
+	const templateInfo: Array<any> = readJSON(templatesDirectoryJSON).templates;
 	templateInfo.filter((template) => {
 		template.name === name;
 	});

@@ -1,11 +1,6 @@
 import { Args, Command, Flags } from '@oclif/core';
 import { createZipArchive } from '../utils/zip';
-import {
-	tempJSONFilePath,
-	zipFilePathProject,
-	zipFilePathRelative,
-	zipFilePathRelativeDirectory,
-} from '../statics';
+import { tempJSONFilePath } from '../statics';
 import {
 	createDirectory,
 	createFile,
@@ -13,6 +8,12 @@ import {
 	readJSON,
 	writeJSON,
 } from '../utils/file-system';
+import {
+	templatesDirectory,
+	templatesDirectoryJSON,
+	zipFileProjectDirectoryPath,
+	zipFileTemplatesDirectoryPath,
+} from '../dynamics';
 
 export default class Scrap extends Command {
 	static description =
@@ -36,24 +37,22 @@ export default class Scrap extends Command {
 		try {
 			const { flags } = await this.parse(Scrap);
 			const zipfilepath = flags.local
-				? zipFilePathRelative
-				: zipFilePathProject;
+				? zipFileTemplatesDirectoryPath
+				: zipFileProjectDirectoryPath;
 			if (flags.local) {
-				if (!directoryExists(zipFilePathRelativeDirectory)) {
-					console.log('heS');
-					createDirectory(zipFilePathRelativeDirectory);
-					createFile(zipFilePathRelativeDirectory + '/temp.json');
-					writeJSON(zipFilePathRelativeDirectory + '/temp.json', {});
+				if (!directoryExists(templatesDirectory)) {
+					createDirectory(templatesDirectory);
+					createFile(templatesDirectoryJSON);
+					writeJSON(templatesDirectoryJSON, {});
 				}
-				console.log("here");
-				const templates = readJSON(zipFilePathRelativeDirectory + '/temp.json');
+				const templates = readJSON(templatesDirectoryJSON);
 				const templatesArray: Array<any> = templates.templates || [];
 				templatesArray.push({
 					name: readJSON(tempJSONFilePath).templateName,
 					location: zipfilepath,
 				});
-				templates.template = templatesArray;
-				writeJSON(zipFilePathRelativeDirectory + '/temp.json', templates);
+				templates.templates = templatesArray;
+				writeJSON(templatesDirectoryJSON, templates);
 			}
 			await createZipArchive(zipfilepath);
 			const tempJSONFile = readJSON(tempJSONFilePath);
