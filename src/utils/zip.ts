@@ -1,7 +1,7 @@
 import * as archiver from 'archiver';
 import * as fs from 'fs-extra';
 import * as minimatch from 'minimatch';
-import { currentDirecorty } from '../statics';
+import { currentDirectory } from '../statics';
 import { ux } from '@oclif/core';
 import unzipper from 'unzipper';
 
@@ -45,7 +45,7 @@ export async function createZipArchive(outputPath: string): Promise<void> {
 		}
 	}
 
-	const rootDir = currentDirecorty; // Update with the root directory of your project
+	const rootDir = currentDirectory; // Update with the root directory of your project
 	await addFilesToArchive(rootDir, '');
 
 	// Finalize the archive
@@ -60,13 +60,8 @@ export async function createZipArchive(outputPath: string): Promise<void> {
 
 export async function unzipArchive(
 	zipPath: string,
-	targetDir: string = currentDirecorty + '/direct',
+	targetDir: string = currentDirectory + '/direct',
 ): Promise<void> {
-	ux.action.start('Unzipping the archive');
 	await fs.ensureDir(targetDir);
-	await fs
-		.createReadStream(zipPath)
-		.pipe(unzipper.Extract({ path: targetDir }))
-		.promise();
-	ux.action.stop();
+	fs.createReadStream(zipPath).pipe(unzipper.Extract({ path: targetDir }));
 }

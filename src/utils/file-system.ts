@@ -52,10 +52,9 @@ export function readJSON(filePath: string): any {
 		const data = readFile(filePath);
 		return JSON.parse(data);
 	} catch (error) {
-		console.log(error);
+		// intentional
 	}
 }
-
 // Write JSON to a file
 export function writeJSON(filePath: string, json: object): void {
 	const data = JSON.stringify(json, null, 2);

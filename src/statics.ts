@@ -1,6 +1,4 @@
-
-
-export const currentDirecorty = process.cwd();
+export const currentDirectory = process.cwd();
 
 export const tempDirectory = process.cwd() + '/.temp';
 

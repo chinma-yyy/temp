@@ -1,8 +1,8 @@
 node_modules
 dist
 .env
-.temp
-.tempignore
-temp.json
+/.tempignore
+/temp.json
 *.zip
-templates
+/templates
+/project

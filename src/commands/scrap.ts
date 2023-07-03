@@ -49,6 +49,7 @@ export default class Scrap extends Command {
 				const templatesArray: Array<any> = templates.templates || [];
 				templatesArray.push({
 					name: readJSON(tempJSONFilePath).templateName,
+					before: readJSON(tempJSONFilePath).before,
 					location: zipfilepath,
 				});
 				templates.templates = templatesArray;

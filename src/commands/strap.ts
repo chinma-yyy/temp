@@ -5,7 +5,9 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { unzipArchive } from '../utils/zip';
 import { templatesDirectoryJSON } from '../dynamics';
-import { currentDirecorty } from '../statics';
+import { currentDirectory } from '../statics';
+import { exec } from 'child_process';
+import figlet from 'figlet';
 
 export default class Strap extends Command {
 	static description =
@@ -51,10 +53,34 @@ export default class Strap extends Command {
 				})
 				.then(
 					async () => {
+						const templateName =
+							(
+								await inquirer
+									.prompt({
+										type: 'input',
+										name: 'templateName',
+										message: `What should be the project name? ${chalk.grey(
+											`(${templates[0].name})`,
+										)}`,
+									})
+									.then((answer) => {
+										return answer;
+									})
+							).templateName || templates[0].name;
 						await unzipArchive(
 							templates[0].location,
-							currentDirecorty + '/' + templates[0].name,
+							currentDirectory + '/' + templateName,
 						);
+						console.log(figlet.textSync('unzipped'));
+						console.log(chalk.magenta("Let's build the template..."));
+						const templateJSON = readJSON(
+							currentDirectory + '/' + templateName + '/temp.json',
+						);
+						const beforeScripts = templateJSON?.before;
+						const afterScripts = templateJSON?.after;
+						console.log(beforeScripts, afterScripts);
+						await executeScripts(beforeScripts);
+						await executeScripts(afterScripts);
 					},
 					() => {
 						console.log(chalk.blue('Maybe later ?...'));
@@ -62,15 +88,26 @@ export default class Strap extends Command {
 				);
 		} catch (error: any) {
 			console.log('strap');
-			console.log(error.message);
+			console.log(error);
 		}
 	}
 }
 
-function searchLocalTemplates(name: string): Array<any> {
+export function searchLocalTemplates(name: string): Array<any> {
 	const templateInfo: Array<any> = readJSON(templatesDirectoryJSON).templates;
 	templateInfo.filter((template) => {
 		template.name === name;
 	});
 	return templateInfo;
+}
+
+async function executeScripts(scripts: Array<string>): Promise<void> {
+	if (scripts.length === 0) {
+		return;
+	}
+	scripts.forEach((script, ind) => {
+		exec(script);
+		console.log('Executed' + ind);
+	});
+	console.log('before done');
 }

@@ -1,8 +1,9 @@
 import { Args, Command, Flags } from '@oclif/core';
 import inquirer, { QuestionCollection } from 'inquirer';
-import { createFile, writeJSON } from '../utils/file-system';
+import { createFile, fileExists, writeJSON } from '../utils/file-system';
 import { tempJSONFilePath } from '../statics';
 import chalk from 'chalk';
+import figlet from 'figlet';
 
 export default class Init extends Command {
 	static description =
@@ -87,11 +88,20 @@ export default class Init extends Command {
 				version,
 				type,
 			};
+			if (fileExists(tempJSONFilePath)) {
+				console.log(
+					chalk.cyan(
+						'\nTemp JSON already exists. The template has been initialized already\n',
+					),
+				);
+				return;
+			}
 			createFile(tempJSONFilePath);
 			writeJSON(tempJSONFilePath, init);
+			console.log(figlet.textSync('temp'));
 			console.log(
 				chalk.yellow(
-					`\n\nYour temp project has been created. Let's create that project template now!!!`,
+					`\nYour temp project has been created.\nLet's create that project template now!!!`,
 				),
 			);
 		} catch (error: any) {

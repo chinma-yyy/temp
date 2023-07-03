@@ -3,6 +3,7 @@ import { readJSON, writeJSON } from '../utils/file-system';
 import { tempJSONFilePath } from '../statics';
 import inquirer from 'inquirer';
 import * as chalk from 'chalk';
+import { searchLocalTemplates } from './strap';
 
 const Chalk = chalk.default;
 export default class Scripts extends Command {
@@ -111,5 +112,7 @@ async function addScripts(Scripts: Array<string>, JSON: any): Promise<void> {
 		}
 	} while (answers.command !== 'q');
 	JSON.before = Scripts;
+	const template = searchLocalTemplates(JSON.templateName);
+	template[0].before = Scripts;
 	writeJSON(tempJSONFilePath, JSON);
 }
