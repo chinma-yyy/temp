@@ -1,5 +1,5 @@
 import { Args, Command, Flags } from '@oclif/core';
-import { readJSON } from '../utils/file-system';
+import { fileExists, readJSON } from '../utils/file-system';
 import { MissingArgumentError } from '../errors/error';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
@@ -73,9 +73,13 @@ export default class Strap extends Command {
 						);
 						console.log(figlet.textSync('unzipped'));
 						console.log(chalk.magenta("Let's build the template..."));
-						const templateJSON = readJSON(
-							currentDirectory + '/' + templateName + '/temp.json',
-						);
+						const JSONpath = `${currentDirectory}/${templateName}/temp.json`;
+						while (!fileExists(JSONpath)) {
+							//intentional wait
+							// Sometimes it is just not synchronous why? idk
+						}
+						const templateJSON = readJSON(JSONpath);
+						console.log(templateJSON);
 						const beforeScripts = templateJSON?.before;
 						const afterScripts = templateJSON?.after;
 						console.log(beforeScripts, afterScripts);
@@ -95,18 +99,22 @@ export default class Strap extends Command {
 
 export function searchLocalTemplates(name: string): Array<any> {
 	const templateInfo: Array<any> = readJSON(templatesDirectoryJSON).templates;
-	templateInfo.filter((template) => {
-		template.name === name;
+	const template = templateInfo.filter((template) => {
+		return template.name === name;
 	});
-	return templateInfo;
+	return template;
 }
 
 async function executeScripts(scripts: Array<string>): Promise<void> {
-	if (scripts.length === 0) {
+	if (!scripts) {
 		return;
 	}
+	console.log(currentDirectory);
 	scripts.forEach((script, ind) => {
-		exec(script);
+		exec(script, (error, stdout, stderr) => {
+			console.log(stdout);
+			console.log(stderr);
+		});
 		console.log('Executed' + ind);
 	});
 	console.log('before done');

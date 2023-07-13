@@ -17,7 +17,7 @@ import {
 
 export default class Scrap extends Command {
 	static description =
-		'Compress and zip all the files ans store them in the .temp directory for ';
+		'Compress and zip all the files and store them in the .temp directory for ';
 
 	static examples = ['temp scrap'];
 
@@ -26,6 +26,11 @@ export default class Scrap extends Command {
 			char: 'l',
 			description:
 				'To create a local template which will be stored in device hidden',
+		}),
+		remote: Flags.boolean({
+			char: 'r',
+			description:
+				'To create a remote template which will be stored in a remote registry',
 		}),
 	};
 
@@ -54,6 +59,10 @@ export default class Scrap extends Command {
 				});
 				templates.templates = templatesArray;
 				writeJSON(templatesDirectoryJSON, templates);
+			} else if (flags.remote) {
+				//
+			} else {
+				throw new Error();
 			}
 			await createZipArchive(zipfilepath);
 			const tempJSONFile = readJSON(tempJSONFilePath);

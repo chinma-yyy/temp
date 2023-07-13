@@ -74,7 +74,7 @@ export default class Init extends Command {
 					});
 				} while (!answers.confirm);
 			}
-			const templateName = answers?.name || 'sagxv';
+			const templateName = answers?.name || '';
 			const repo = answers?.repo || '';
 			const author = answers?.author || '';
 			const description = answers?.description || '';

@@ -69,15 +69,15 @@ export default class Scripts extends Command {
 					])
 					.then(async (answers) => {
 						if (answers.type === 'after') {
-							await addScripts(afterScripts, JSON);
+							await addScripts(afterScripts, JSON, 'after');
 						} else {
-							await addScripts(beforeScripts, JSON);
+							await addScripts(beforeScripts, JSON, 'before');
 						}
 					});
 			} else if (flags.before) {
-				await addScripts(beforeScripts, JSON);
+				await addScripts(beforeScripts, JSON, 'before');
 			} else if (flags.after) {
-				await addScripts(afterScripts, JSON);
+				await addScripts(afterScripts, JSON, 'after');
 			}
 		} catch (error: any) {
 			console.log('scripts');
@@ -86,7 +86,11 @@ export default class Scripts extends Command {
 	}
 }
 
-async function addScripts(Scripts: Array<string>, JSON: any): Promise<void> {
+async function addScripts(
+	Scripts: Array<string>,
+	JSON: any,
+	type: string,
+): Promise<void> {
 	let answers,
 		num = 0;
 
@@ -97,7 +101,7 @@ async function addScripts(Scripts: Array<string>, JSON: any): Promise<void> {
 	);
 	console.log(
 		Chalk.yellow.bold(
-			'To exit the process to add command enter "q" or "quit" as a command',
+			'To exit the process to add command enter "q" as a command',
 		),
 	);
 	do {
@@ -113,6 +117,8 @@ async function addScripts(Scripts: Array<string>, JSON: any): Promise<void> {
 	} while (answers.command !== 'q');
 	JSON.before = Scripts;
 	const template = searchLocalTemplates(JSON.templateName);
-	template[0].before = Scripts;
+	type === 'after'
+		? (template[0].after = Scripts)
+		: (template[0].before = Scripts);
 	writeJSON(tempJSONFilePath, JSON);
 }

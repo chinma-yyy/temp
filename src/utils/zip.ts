@@ -63,5 +63,8 @@ export async function unzipArchive(
 	targetDir: string = currentDirectory + '/direct',
 ): Promise<void> {
 	await fs.ensureDir(targetDir);
-	fs.createReadStream(zipPath).pipe(unzipper.Extract({ path: targetDir }));
+	await fs
+		.createReadStream(zipPath)
+		.pipe(unzipper.Extract({ path: targetDir }))
+		.promise();
 }
